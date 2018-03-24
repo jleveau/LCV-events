@@ -1,0 +1,40 @@
+{
+  "name": "lcv-reservation",
+  "version": "1.1.0",
+  "description": "A service to manager reservations",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jleveau/LCV-reservation"
+  },
+  "main": "app.js",
+  "scripts": {
+    "start": "SET NODE_ENV=dev&& node bin/www",
+    "start-prod": "export NODE_ENV=prod && node bin/www",
+    "test": "mocha tests --exit --recursive --timeout 10000"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.18.2",
+    "config": "^1.30.0",
+    "express": "^4.16.2",
+    "fs-readdir-recursive": "^1.1.0",
+    "html": "^1.0.0",
+    "moment": "^2.20.1",
+    "mongoose": "^5.0.9",
+    "morgan": "^1.9.0",
+    "node-schedule": "^1.3.0",
+    "request": "^2.83.0",
+    "winston": "^3.0.0-rc1"
+  },
+  "devDependencies": {
+    "@angular/cli": "^1.7.3",
+    "chai": "^4.1.2",
+    "eslint": "^4.19.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^5.0.2"
+  }
+}
