@@ -1,10 +1,11 @@
 const Reservation = require("..//model/reservation/controller")
 const logger = require("../logger")
 const moment = require("moment")
+
 const schedule = require("node-schedule")
 
 function nextSaturday () {
-    return moment().set({
+    return moment().tz("Europe/Paris").set({
         weekday: 6,
         hour: 14,
         minutes: 0,
@@ -21,9 +22,9 @@ function createWeeklyReservation () {
                 const limitReservationDate = moment(date).subtract(3, "day")
                 if (!reservation || (moment(reservation.date) < date && moment(reservation.date).diff(date, "hour") > 1)) {
                     const reservationNew = {
-                        date,
-                        end_date: endDate,
-                        reservation_limit_date: limitReservationDate
+                        date: date.format(),
+                        end_date: endDate.format(),
+                        reservation_limit_date: limitReservationDate.format()
                     }
                     resolve(Reservation.create(reservationNew))
                 }
