@@ -10,6 +10,7 @@ const  morgan = require('morgan')
 // Database connection
 const dbConfig = config.DBConfig
 const mongoUrl = dbConfig.prefix + dbConfig.host + "/" + dbConfig.name
+process.env.TZ = 'Europe/Paris' 
 
 const connectWithRetry = function () {
     return mongoose.connect(mongoUrl)
