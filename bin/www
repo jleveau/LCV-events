@@ -27,7 +27,7 @@ const server = http.createServer(app)
  */
 
 server.listen(port)
-logger.info("Starting server on port: " + port)
+console.log("Starting server on port: " + port)
 server.on("error", onError)
 server.on("listening", onListening)
 
