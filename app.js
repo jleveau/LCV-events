@@ -5,12 +5,12 @@ const mongoose = require("mongoose")
 const logger = require("./logger")
 const config = require("config")
 const jobs = require("./jobs/jobs")
-const reservation = require("./routes/reservation")
-const  morgan = require('morgan')
+const event = require("./routes/event")
+const morgan = require("morgan")
+
 // Database connection
 const dbConfig = config.DBConfig
 const mongoUrl = dbConfig.prefix + dbConfig.host + "/" + dbConfig.name
-process.env.TZ = 'Europe/Paris' 
 
 const connectWithRetry = function () {
     return mongoose.connect(mongoUrl)
@@ -33,7 +33,7 @@ db.on("error", console.error.bind(console, "connection error:"))
 // Initialize our app variable
 const app = express()
 
-app.use(morgan('dev'))
+app.use(morgan("dev"))
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT")
@@ -47,11 +47,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use("/api/reservation", reservation)
-
-app.get('*', (req, res) => {
-    console.log(req.url);
-})
+app.use("/api/events", event)
 
 jobs.start()
 

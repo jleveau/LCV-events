@@ -1,11 +1,12 @@
-const Reservation = require("..//model/reservation/controller")
+const Event = require("..//model/event/controller")
 const logger = require("../logger")
 const moment = require("moment")
 
 const schedule = require("node-schedule")
 
 function nextSaturday () {
-    return  moment().tz("Europe/Paris").set({
+    return moment().tz("Europe/Paris").set({
+
         weekday: 6,
         hour: 14,
         minutes: 0,
@@ -13,20 +14,20 @@ function nextSaturday () {
     })
 }
 
-function createWeeklyReservation () {
+function createWeeklyEvent () {
     return new Promise((resolve, reject) => {
-        Reservation.getNext()
-            .then((reservation) => {
+        Event.getNext()
+            .then((event) => {
                 const date = nextSaturday()
                 const endDate = moment(date).add(2, "hours")
-                const limitReservationDate = moment(date).subtract(3, "day")
-                if (!reservation || (moment(reservation.date) < date && moment(reservation.date).diff(date, "hour") > 1)) {
-                    const reservationNew = {
+                const limitEventDate = moment(date).subtract(3, "day")
+
+                if (!event || (moment(event.date) < date && moment(event.date).diff(date, "hour") > 1)) {
+                    resolve(Event.create({
                         date: date.toString(),
                         end_date: endDate.toString(),
-                        reservation_limit_date: limitReservationDate.toString()
-                    }
-                    resolve(Reservation.create(reservationNew))
+                        event_limit_date: limitEventDate.toString()
+                    }))
                 }
                 resolve()
             })
@@ -37,7 +38,7 @@ function createWeeklyReservation () {
     })
 }
 
-const jobList = [createWeeklyReservation]
+const jobList = [createWeeklyEvent]
 
 function exectureJobs () {
     jobList.forEach((job) => {
@@ -52,5 +53,5 @@ module.exports = {
             exectureJobs()
         })
     },
-    createWeeklyReservation
+    createWeeklyEvent
 }
