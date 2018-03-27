@@ -5,7 +5,7 @@ const mongoose = require("mongoose")
 const logger = require("./logger")
 const config = require("config")
 const jobs = require("./jobs/jobs")
-const reservation = require("./routes/reservation")
+const event = require("./routes/event")
 
 // Database connection
 const dbConfig = config.DBConfig
@@ -44,7 +44,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use("/api/reservation", reservation)
+app.use("/api/events", event)
 jobs.start()
 
 module.exports = app

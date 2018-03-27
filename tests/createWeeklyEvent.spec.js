@@ -3,23 +3,23 @@ const server = require("../bin/www")// eslint-disable-line no-unused-vars
 const chai = require("chai")
 const expect = chai.expect
 const moment = require("moment")
-const Reservation = require("../model/reservation/controller")
+const Event = require("../model/event/controller")
 const mongoose = require("mongoose")
 const Jobs = require("../jobs/jobs")
 
 describe("Jobs", () => {
     before((done) => {
-        mongoose.model("Reservation").remove([], () => {
+        mongoose.model("Event").remove([], () => {
             done()
         })
     })
 
     describe("creation", () => {
-        it("create a weekly reservation for saturday 2pm", (done) => {
-            Jobs.createWeeklyReservation()
-                .then(() => Reservation.getNext())
-                .then((reservation) => {
-                    expect(moment(reservation.date).toString())
+        it("create a weekly event for saturday 2pm", (done) => {
+            Jobs.createWeeklyEvent()
+                .then(() => Event.getNext())
+                .then((event) => {
+                    expect(moment(event.date).toString())
                         .to.be.eql(
                             moment().set({
                                 weekday: 6,
@@ -28,7 +28,7 @@ describe("Jobs", () => {
                                 seconds: 0
                             })
                                 .toString())
-                    expect(moment(reservation.end_date).toString())
+                    expect(moment(event.end_date).toString())
                         .to.be.eql(
                             moment().set({
                                 weekday: 6,
@@ -37,7 +37,7 @@ describe("Jobs", () => {
                                 seconds: 0
                             })
                                 .toString())
-                    expect(moment(reservation.reservation_limit_date).toString())
+                    expect(moment(event.event_limit_date).toString())
                         .to.be.eql(
                             moment().set({
                                 weekday: 3,

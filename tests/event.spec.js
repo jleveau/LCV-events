@@ -5,25 +5,25 @@ const chai = require("chai")
 const expect = chai.expect
 const moment = require("moment")
 const async = require("async")
-const Reservation = require("../model/reservation/schema")
+const Event = require("../model/event/schema")
 const mongoose = require("mongoose")
 
 describe("API", () => {
-    describe("Reservations", () => {
+    describe("Events", () => {
         before((done) => {
-            mongoose.model("Reservation").remove([], () => {
+            mongoose.model("Event").remove([], () => {
                 done()
             })
         })
 
         describe("creation ", () => {
-            it("send /api/reservation/new", (done) => {
-                requestSender.createPost("/api/reservation/new", {
-                    reservation:
+            it("send /api/event/new", (done) => {
+                requestSender.createPost("/api/event/new", {
+                    event:
                     {
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
-                        reservation_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
+                        event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
                         participants: ["user1"],
                         waiting_for_other: "user2",
                         not_participants: ["user3"]
@@ -31,17 +31,17 @@ describe("API", () => {
                 })
                     .then((response) => {
                         expect(response.status).to.be.eql(200)
-                        expect(response.reservation._id).to.not.eql(undefined)
+                        expect(response.event._id).to.not.eql(undefined)
                         done()
                     })
                     .catch((error) => done(error))
             })
 
-            it("send /api/reservation/new with an invalid reservation (breaking rules)", (done) => {
-                requestSender.createPost("/api/reservation/new", {
-                    reservation:
+            it("send /api/event/new with an invalid event (breaking rules)", (done) => {
+                requestSender.createPost("/api/event/new", {
+                    event:
                     {
-                        reservation_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
+                        event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         participants: ["user1"],
                         not_participants: ["user1"]
@@ -56,67 +56,67 @@ describe("API", () => {
                     })
             })
 
-            it("send /api/reservation/new with no reservation", (done) => {
-                requestSender.createPost("/api/reservation/new", {})
+            it("send /api/event/new with no event", (done) => {
+                requestSender.createPost("/api/event/new", {})
                     .then((response) => {
                         done("should have failed")
                     })
                     .catch((error) => {
-                        expect(error).to.be.eql("no reservation provided")
+                        expect(error).to.be.eql("no event provided")
                         done()
                     })
             })
         })
 
         describe("updates", (done) => {
-            it("post /api/reservation/update", (done) => {
-                const reservation = new Reservation({
+            it("post /api/event/update", (done) => {
+                const event = new Event({
                     participants: [],
                     not_participants: [],
-                    reservation_limit_date: moment().subtract(1, "day").toDate(),
+                    event_limit_date: moment().subtract(1, "day").toDate(),
                     end_date: moment().toDate(),
                     date: moment().toDate()
                 })
-                reservation.save()
-                    .then((reservationObj) => new Promise((resolve, reject) => {
-                        reservationObj.participants.push("user1")
-                        return resolve(reservationObj)
+                event.save()
+                    .then((eventObj) => new Promise((resolve, reject) => {
+                        eventObj.participants.push("user1")
+                        return resolve(eventObj)
                     }))
-                    .then((reservationObj) => requestSender.createPut("/api/reservation/update", { reservation: reservationObj }))
+                    .then((eventObj) => requestSender.createPut("/api/event/update", { event: eventObj }))
                     .then((response) => {
                         expect(response.status).to.be.eql(200)
-                        expect(response.reservation.participants).to.have.lengthOf(1)
+                        expect(response.event.participants).to.have.lengthOf(1)
                         done()
                     })
                     .catch(done)
             })
 
-            it("post /api/reservation/update with no reservation", (done) => {
-                requestSender.createPut("/api/reservation/update", {})
+            it("post /api/event/update with no event", (done) => {
+                requestSender.createPut("/api/event/update", {})
                     .then((response) => {
                         done("should have failed")
                     })
                     .catch((error) => {
-                        expect(error).to.be.eql("can't find reservation")
+                        expect(error).to.be.eql("can't find event")
                         done()
                     })
             })
 
-            it("post /api/reservation/update with a user both participating and not participating", (done) => {
-                const reservation = new Reservation({
+            it("post /api/event/update with a user both participating and not participating", (done) => {
+                const event = new Event({
                     participants: [],
                     not_participants: [],
                     date: moment().toDate(),
                     end_date: moment().toDate(),
-                    reservation_limit_date: moment().subtract(1, "day").toDate()
+                    event_limit_date: moment().subtract(1, "day").toDate()
                 })
-                reservation.save()
-                    .then((reservationObj) => new Promise((resolve, reject) => {
-                        reservationObj.participants.push("user1")
-                        reservationObj.not_participants.push("user1")
-                        return resolve(reservationObj)
+                event.save()
+                    .then((eventObj) => new Promise((resolve, reject) => {
+                        eventObj.participants.push("user1")
+                        eventObj.not_participants.push("user1")
+                        return resolve(eventObj)
                     }))
-                    .then((reservationObj) => requestSender.createPut("/api/reservation/update", { reservation: reservationObj }))
+                    .then((eventObj) => requestSender.createPut("/api/event/update", { event: eventObj }))
                     .then((response) => {
                         done("should have failed")
                     })
@@ -126,14 +126,14 @@ describe("API", () => {
                     })
             })
 
-            it("post /api/reservation/update with a date superior to end date", (done) => {
-                const reservation = new Reservation({
+            it("post /api/event/update with a date superior to end date", (done) => {
+                const event = new Event({
                     date: moment().add(1, "day").toDate(),
                     end_date: moment().toDate(),
-                    reservation_limit_date: moment().subtract(1, "hour").toDate()
+                    event_limit_date: moment().subtract(1, "hour").toDate()
                 })
-                reservation.save()
-                    .then((reservationObj) => requestSender.createPut("/api/reservation/update", { reservation: reservationObj }))
+                event.save()
+                    .then((eventObj) => requestSender.createPut("/api/event/update", { event: eventObj }))
                     .then((response) => {
                         done("should have failed")
                     })
@@ -143,144 +143,144 @@ describe("API", () => {
                     })
             })
 
-            it("post /api/reservation/update with a date inferior to reservation_limit_date", (done) => {
-                const reservation = new Reservation({
+            it("post /api/event/update with a date inferior to event_limit_date", (done) => {
+                const event = new Event({
                     participants: [],
                     not_participants: [],
                     date: moment().toDate(),
                     end_date: moment().add(1, "hour").toDate(),
-                    reservation_limit_date: moment().add(1, "day").toDate()
+                    event_limit_date: moment().add(1, "day").toDate()
 
                 })
-                reservation.save()
-                    .then((reservationObj) => new Promise((resolve, reject) => {
-                        return resolve(reservationObj)
+                event.save()
+                    .then((eventObj) => new Promise((resolve, reject) => {
+                        return resolve(eventObj)
                     }))
-                    .then((reservationObj) => requestSender.createPut("/api/reservation/update", { reservation: reservationObj }))
+                    .then((eventObj) => requestSender.createPut("/api/event/update", { event: eventObj }))
                     .then((response) => {
                         done("should have failed")
                     })
                     .catch((error) => {
-                        expect(error).to.be.eql("reservation limit date cannot be superior to date")
+                        expect(error).to.be.eql("event limit date cannot be superior to date")
                         done()
                     })
             })
         })
 
-        describe("retreiving all reservation", (done) => {
-            it("get /api/reservation/all", (done) => {
+        describe("retreiving all event", (done) => {
+            it("get /api/event/all", (done) => {
                 before((done) => {
-                    let reservation1 = new Reservation({
+                    let event1 = new Event({
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
                         end_date: moment().add(1, "hour").toDate(),
-                        reservation_limit_date: moment().subtract(1, "day").toDate()
+                        event_limit_date: moment().subtract(1, "day").toDate()
                     })
-                    let reservation2 = new Reservation({
+                    let event2 = new Event({
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
                         end_date: moment().add(1, "hour").toDate(),
-                        reservation_limit_date: moment().subtract(1, "day").toDate()
+                        event_limit_date: moment().subtract(1, "day").toDate()
                     })
-                    let reservation3 = new Reservation({
+                    let event3 = new Event({
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
                         end_date: moment().add(1, "hour").toDate(),
-                        reservation_limit_date: moment().subtract(1, "day").toDate()
+                        event_limit_date: moment().subtract(1, "day").toDate()
                     })
-                    Reservation.remove({})
-                        .then(() => reservation1.save())
-                        .then(() => reservation2.save())
-                        .then(() => reservation3.save())
+                    Event.remove({})
+                        .then(() => event1.save())
+                        .then(() => event2.save())
+                        .then(() => event3.save())
                         .catch(done)
                 })
 
-                requestSender.createGet("/api/reservation/")
+                requestSender.createGet("/api/event/")
                     .then((response) => {
                         expect(response.status).be.eql(200)
-                        expect(response.reservations).lengthOf(3)
+                        expect(response.events).lengthOf(3)
 
-                        const reservation = response.reservations[0]
-                        expect(reservation.created_at).not.to.eql(null)
-                        expect(reservation._id).to.not.eql(null)
+                        const event = response.events[0]
+                        expect(event.created_at).not.to.eql(null)
+                        expect(event._id).to.not.eql(null)
                         done()
                     })
                     .catch((error) => done(error))
             })
         })
 
-        describe("retreiving the next reservation", (done) => {
-            let reservation1, reservation2, reservation3
+        describe("retreiving the next event", (done) => {
+            let event1, event2, event3
 
             before((done) => {
                 async.waterfall([
-                    (next) => Reservation.remove({}, () => next()),
+                    (next) => Event.remove({}, () => next()),
                     (next) => {
-                        reservation1 = new Reservation({
+                        event1 = new Event({
                             end_date: moment().add(3, "day").toDate(),
-                            reservation_limit_date: moment().add(1, "day").toDate(),
+                            event_limit_date: moment().add(1, "day").toDate(),
                             date: moment().add(2, "day").toDate()
                         })
-                        reservation2 = new Reservation({
+                        event2 = new Event({
                             end_date: moment().add(2, "day").toDate(),
-                            reservation_limit_date: moment().toDate(),
+                            event_limit_date: moment().toDate(),
                             date: moment().add(1, "day").toDate()
                         })
-                        reservation3 = new Reservation({
+                        event3 = new Event({
                             end_date: moment().add(4, "day").toDate(),
-                            reservation_limit_date: moment().add(2, "day").toDate(),
+                            event_limit_date: moment().add(2, "day").toDate(),
                             date: moment().add(3, "day").toDate()
                         })
                         async.parallel([
-                            (next) => reservation1.save(next),
-                            (next) => reservation2.save(next),
-                            (next) => reservation3.save(next)
+                            (next) => event1.save(next),
+                            (next) => event2.save(next),
+                            (next) => event3.save(next)
                         ], next)
                     }], (err) => done(err))
             })
 
-            it("get /api/reservation/next", (done) => {
-                requestSender.createGet("/api/reservation/next")
+            it("get /api/event/next", (done) => {
+                requestSender.createGet("/api/event/next")
                     .then((response) => {
                         expect(response.status).be.eql(200)
-                        const reservation = response.reservation
-                        expect(moment(reservation.date).toDate()).to.be.eql(reservation2.date)
+                        const event = response.event
+                        expect(moment(event.date).toDate()).to.be.eql(event2.date)
                         done()
                     })
                     .catch((error) => done(error))
             })
         })
 
-        describe("retreiving reservation by id", (done) => {
-            let reservation1
+        describe("retreiving event by id", (done) => {
+            let event1
             before((done) => {
                 async.waterfall([
-                    (next) => Reservation.remove({}, () => next()),
+                    (next) => Event.remove({}, () => next()),
                     (next) => {
-                        const reservation = new Reservation({
+                        const event = new Event({
                             end_date: moment().add(1, "hour").toDate(),
-                            reservation_limit_date: moment().subtract(1, "day").toDate(),
+                            event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment()
                         })
-                        reservation.save((err, savedReservation) => {
+                        event.save((err, savedEvent) => {
                             if (err) {
                                 return next(err)
                             }
-                            reservation1 = savedReservation
+                            event1 = savedEvent
                             return next()
                         })
                     },
                     (next) => {
-                        const reservation = new Reservation({
+                        const event = new Event({
                             end_date: moment().add(1, "hour").toDate(),
-                            reservation_limit_date: moment().subtract(1, "day").toDate(),
+                            event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment()
                         })
 
-                        reservation.save((err, savedReservation) => {
+                        event.save((err, savedEvent) => {
                             if (err) {
                                 return next(err)
                             }
@@ -290,14 +290,14 @@ describe("API", () => {
                 ], (err) => done(err))
             })
 
-            it("get /api/reservation/?id", (done) => {
-                requestSender.createGet("/api/reservation/?id" + reservation1._id)
+            it("get /api/event/?id", (done) => {
+                requestSender.createGet("/api/event/?id" + event1._id)
                     .then((response) => {
                         expect(response.status).be.eql(200)
-                        expect(response.reservations).lengthOf(1)
+                        expect(response.events).lengthOf(1)
 
-                        const reservation = response.reservation
-                        expect(reservation._id).to.be.eql(reservation1._id)
+                        const event = response.event
+                        expect(event._id).to.be.eql(event1._id)
                         done()
                     })
                     .catch((error) => done(error))
