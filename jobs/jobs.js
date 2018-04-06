@@ -20,12 +20,10 @@ function createWeeklyEvent () {
                 const date = nextSaturday()
                 const endDate = moment(date).add(2, "hours")
                 const limitReservationDate = moment(date).subtract(3, "day")
-                console.log("utc, format", date.utc().format())
-                console.log("utc", date.utc())
-                console.log("string", date.toString())
 
                 if (!event || (moment(event.date) < date && moment(event.date).diff(date, "hour") > 1)) {
                     resolve(Event.create({
+                        title: "event",
                         date: date.toString(),
                         end_date: endDate.toString(),
                         event_limit_date: limitReservationDate.toString()

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose")
 
 const schema = new mongoose.Schema({
+    title: { type: String },
+    description: { type: String },
     created_at: { type: Date, required: true, default: Date.now },
     event_limit_date: { type: Date, required: true },
     date: { type: Date, required: true },

@@ -21,6 +21,7 @@ describe("API", () => {
                 requestSender.createPost("/api/events/new", {
                     event:
                     {
+                        title: "event",
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
@@ -41,6 +42,7 @@ describe("API", () => {
                 requestSender.createPost("/api/events/new", {
                     event:
                     {
+                        title: "event",
                         event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         participants: ["user1"],
@@ -71,6 +73,7 @@ describe("API", () => {
         describe("updates", (done) => {
             it("post /api/events/update", (done) => {
                 const event = new Event({
+                    title: "event",
                     participants: [],
                     not_participants: [],
                     event_limit_date: moment().subtract(1, "day").toDate(),
@@ -104,6 +107,7 @@ describe("API", () => {
 
             it("post /api/events/update with a user both participating and not participating", (done) => {
                 const event = new Event({
+                    title: "event",
                     participants: [],
                     not_participants: [],
                     date: moment().toDate(),
@@ -128,6 +132,7 @@ describe("API", () => {
 
             it("post /api/events/update with a date superior to end date", (done) => {
                 const event = new Event({
+                    title: "event",
                     date: moment().add(1, "day").toDate(),
                     end_date: moment().toDate(),
                     event_limit_date: moment().subtract(1, "hour").toDate()
@@ -145,6 +150,7 @@ describe("API", () => {
 
             it("post /api/events/update with a date inferior to event_limit_date", (done) => {
                 const event = new Event({
+                    title: "event",
                     participants: [],
                     not_participants: [],
                     date: moment().toDate(),
@@ -171,6 +177,7 @@ describe("API", () => {
             it("get /api/events/all", (done) => {
                 before((done) => {
                     let event1 = new Event({
+                        title: "event",
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
@@ -178,6 +185,7 @@ describe("API", () => {
                         event_limit_date: moment().subtract(1, "day").toDate()
                     })
                     let event2 = new Event({
+                        title: "event",
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
@@ -185,6 +193,7 @@ describe("API", () => {
                         event_limit_date: moment().subtract(1, "day").toDate()
                     })
                     let event3 = new Event({
+                        title: "event",
                         participants: [],
                         not_participants: [],
                         date: moment().toDate(),
@@ -220,16 +229,19 @@ describe("API", () => {
                     (next) => Event.remove({}, () => next()),
                     (next) => {
                         event1 = new Event({
+                            title: "event",
                             end_date: moment().add(3, "day").toDate(),
                             event_limit_date: moment().add(1, "day").toDate(),
                             date: moment().add(2, "day").toDate()
                         })
                         event2 = new Event({
+                            title: "event",
                             end_date: moment().add(2, "day").toDate(),
                             event_limit_date: moment().toDate(),
                             date: moment().add(1, "day").toDate()
                         })
                         event3 = new Event({
+                            title: "event",
                             end_date: moment().add(4, "day").toDate(),
                             event_limit_date: moment().add(2, "day").toDate(),
                             date: moment().add(3, "day").toDate()
@@ -261,6 +273,7 @@ describe("API", () => {
                     (next) => Event.remove({}, () => next()),
                     (next) => {
                         const event = new Event({
+                            title: "event",
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment()
@@ -275,6 +288,7 @@ describe("API", () => {
                     },
                     (next) => {
                         const event = new Event({
+                            title: "event",
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment()
