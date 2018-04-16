@@ -25,9 +25,9 @@ describe("API", () => {
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
                         event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
-                        participants: ["user1"],
-                        waiting_for_other: "user2",
-                        not_participants: ["user3"]
+                        participants: [mongoose.Types.ObjectId()],
+                        waiting_for_other: mongoose.Types.ObjectId(),
+                        not_participants: [mongoose.Types.ObjectId()]
                     }
                 })
                     .then((response) => {
@@ -39,14 +39,15 @@ describe("API", () => {
             })
 
             it("send /api/events/new with an invalid event (breaking rules)", (done) => {
+                const user = mongoose.Types.ObjectId()
                 requestSender.createPost("/api/events/new", {
                     event:
                     {
                         title: "event",
                         event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
                         end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
-                        participants: ["user1"],
-                        not_participants: ["user1"]
+                        participants: [user],
+                        not_participants: [user]
                     }
                 })
                     .then((response) => {
@@ -82,7 +83,7 @@ describe("API", () => {
                 })
                 event.save()
                     .then((eventObj) => new Promise((resolve, reject) => {
-                        eventObj.participants.push("user1")
+                        eventObj.participants.push(mongoose.Types.ObjectId())
                         return resolve(eventObj)
                     }))
                     .then((eventObj) => requestSender.createPut("/api/events/update", { event: eventObj }))
@@ -106,18 +107,19 @@ describe("API", () => {
             })
 
             it("post /api/events/update with a user both participating and not participating", (done) => {
+                const user = mongoose.Types.ObjectId()
                 const event = new Event({
                     title: "event",
                     participants: [],
                     not_participants: [],
                     date: moment().toDate(),
-                    end_date: moment().toDate(),
+                    end_date: moment().add(1, "day").toDate(),
                     event_limit_date: moment().subtract(1, "day").toDate()
                 })
                 event.save()
                     .then((eventObj) => new Promise((resolve, reject) => {
-                        eventObj.participants.push("user1")
-                        eventObj.not_participants.push("user1")
+                        eventObj.participants.push(user)
+                        eventObj.not_participants.push(user)
                         return resolve(eventObj)
                     }))
                     .then((eventObj) => requestSender.createPut("/api/events/update", { event: eventObj }))

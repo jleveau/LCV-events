@@ -33,6 +33,9 @@ class EventController {
                 .find({ date: { $gte: now } })
                 .sort({ "date": 1 })
                 .limit(1)
+                .populate("participants")
+                .populate("not_participants")
+                .populate("uncertains")
                 .exec((err, events) => {
                     if (err) {
                         return reject(err)

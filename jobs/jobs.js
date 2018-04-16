@@ -23,7 +23,7 @@ function createWeeklyEvent () {
 
                 if (!event || (moment(event.date) < date && moment(event.date).diff(date, "hour") > 1)) {
                     resolve(Event.create({
-                        title: "event",
+                        title: "Badminton",
                         date: date.toString(),
                         end_date: endDate.toString(),
                         event_limit_date: limitReservationDate.toString()
