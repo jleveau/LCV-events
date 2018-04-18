@@ -8,7 +8,9 @@ class EventController {
             const eventObj = new EventSchema(event)
             this.validate(eventObj)
                 .then(() => eventObj.save())
-                .then((eventSaved) => resolve(eventSaved))
+                .then((eventSaved) => {
+                    resolve(eventSaved)
+                })
                 .catch((error) => reject(error))
         })
     }

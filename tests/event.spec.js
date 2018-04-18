@@ -20,19 +20,20 @@ describe("API", () => {
             it("send /api/events/new", (done) => {
                 requestSender.createPost("/api/events/new", {
                     event:
-                    {
-                        title: "event",
-                        end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
-                        date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
-                        event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
-                        participants: [mongoose.Types.ObjectId()],
-                        waiting_for_other: mongoose.Types.ObjectId(),
-                        not_participants: [mongoose.Types.ObjectId()]
-                    }
+                        {
+                            title: "event",
+                            end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
+                            date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
+                            event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
+                            participants: [mongoose.Types.ObjectId()],
+                            waiting_for_other: mongoose.Types.ObjectId(),
+                            not_participants: [mongoose.Types.ObjectId()]
+                        }
                 })
                     .then((response) => {
                         expect(response.status).to.be.eql(200)
                         expect(response.event._id).to.not.eql(undefined)
+                        expect(response.event._id).to.not.eql(null)
                         done()
                     })
                     .catch((error) => done(error))
@@ -42,13 +43,13 @@ describe("API", () => {
                 const user = mongoose.Types.ObjectId()
                 requestSender.createPost("/api/events/new", {
                     event:
-                    {
-                        title: "event",
-                        event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
-                        end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
-                        participants: [user],
-                        not_participants: [user]
-                    }
+                        {
+                            title: "event",
+                            event_limit_date: moment("03-03-2018", "MM-DD-YYYY").subtract(1, "day").toDate(),
+                            end_date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
+                            participants: [user],
+                            not_participants: [user]
+                        }
                 })
                     .then((response) => {
                         done("should have failed")
