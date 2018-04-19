@@ -60,6 +60,25 @@ describe("API", () => {
                     })
             })
 
+            it("send /api/events/new with an invalid event (user list contains null)", (done) => {
+                requestSender.createPost("/api/events/new", {
+                    event:
+                        {
+                            title: "event",
+                            date: moment("03-03-2018", "MM-DD-YYYY").toDate(),
+                            participants: [null],
+                            not_participants: []
+                        }
+                })
+                    .then((response) => {
+                        done("should have failed")
+                    })
+                    .catch((error) => {
+                        expect(error).to.be.eql("User id cannot be null")
+                        done()
+                    })
+            })
+
             it("send /api/events/new with no event", (done) => {
                 requestSender.createPost("/api/events/new", {})
                     .then((response) => {
