@@ -7,24 +7,52 @@ class EventController {
         return new Promise((resolve, reject) => {
             const eventObj = new EventSchema(event)
             this.validate(eventObj)
-                .then(() => eventObj.save())
-                .then((eventSaved) => {
-                    resolve(eventSaved)
-                })
-                .catch((error) => reject(error))
+                .then(() => eventObj.save((err, res) => {
+                    if (err) {
+                        throw new Error(err)
+                    }
+                    resolve(res)
+                }
+                ))
+                .catch(error => reject(error))
         })
     }
 
     getAll () {
         return EventSchema.find({})
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
     }
 
     getById (id) {
         return new Promise((resolve, reject) => {
             if (!id) {
-                return reject(new Error("no regestration id given"))
+                return reject(new Error("no event id given"))
             }
             return EventSchema.find({ _id: id })
+        })
+    }
+
+    getByAuthor (id) {
+        return new Promise((resolve, reject) => {
+            if (!id) {
+                return reject(new Error("no regestration id given"))
+            }
+            return EventSchema.find({ author: id })
+        })
+    }
+
+    getByParticipating (userId) {
+        return Promise((resolve, reject) => {
+            if (!userId) {
+                return reject(new Error("no user_id given"))
+            }
+            return EventSchema.find({
+                participants: userId
+            })
         })
     }
 
@@ -38,6 +66,7 @@ class EventController {
                 .populate("participants")
                 .populate("not_participants")
                 .populate("uncertains")
+                .populate("author")
                 .exec((err, events) => {
                     if (err) {
                         return reject(err)
@@ -65,6 +94,16 @@ class EventController {
                             return reject(error)
                         })
                 })
+        })
+    }
+
+    delete (eventId) {
+        return new Promise((resolve, reject) => {
+            return EventSchema.findByIdAndRemove(eventId)
+                .then((removedEvent) => {
+                    resolve(removedEvent)
+                })
+                .catch((error) => reject(error))
         })
     }
 
