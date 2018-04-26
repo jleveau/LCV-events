@@ -10,8 +10,8 @@
   "scripts": {
     "start": "SET NODE_ENV=dev&& node bin/www",
     "start-prod": "export NODE_ENV=prod && node bin/www",
-    "test": "mocha tests --exit --recursive --timeout 10000",
-    "docker" : "docker  build -t oursgroumy/lcv-events . && docker push oursgroumy/lcv-events"
+    "docker" : "docker  build -t oursgroumy/lcv-events . && docker push oursgroumy/lcv-events",
+    "test": "mocha tests --exit --recursive --timeout 10000"
 
   },
   "dependencies": {

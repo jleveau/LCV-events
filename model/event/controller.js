@@ -7,13 +7,8 @@ class EventController {
         return new Promise((resolve, reject) => {
             const eventObj = new EventSchema(event)
             this.validate(eventObj)
-                .then(() => eventObj.save((err, res) => {
-                    if (err) {
-                        throw new Error(err)
-                    }
-                    resolve(res)
-                }
-                ))
+                .then(() =>  eventObj.save())
+                .then((eventSaved) => resolve(eventSaved))
                 .catch(error => reject(error))
         })
     }
@@ -32,9 +27,16 @@ class EventController {
             if (!id) {
                 return reject(new Error("no event id given"))
             }
-            return EventSchema.find({ _id: id })
+            return EventSchema.findById(id)
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
+            .then((event) => resolve(event))
         })
     }
+
 
     getByAuthor (id) {
         return new Promise((resolve, reject) => {
@@ -42,6 +44,12 @@ class EventController {
                 return reject(new Error("no regestration id given"))
             }
             return EventSchema.find({ author: id })
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
+            .then((events) => resolve(events))
         })
     }
 
@@ -53,6 +61,11 @@ class EventController {
             return EventSchema.find({
                 participants: userId
             })
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec().then((events) => resolve(events))
         })
     }
 

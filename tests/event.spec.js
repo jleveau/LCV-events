@@ -121,7 +121,7 @@ describe("API", () => {
                     })
             })
 
-            it("send /api/events/new with an invalid event (user list contains null)", (done) => {
+            it("post /api/events/ with an invalid event (user list contains null)", (done) => {
                 requestSender.createPost("/api/events/", {
                     event:
                         {
@@ -417,6 +417,7 @@ describe("API", () => {
             const user1 = mongoose.Types.ObjectId()
             const user2 = mongoose.Types.ObjectId()
             let event1, event2, event3
+
             before((done) => {
                 Event.remove({})
                     .then(() => {
@@ -434,7 +435,7 @@ describe("API", () => {
                         event1 = eventSaved
                         const event = new Event({
                             title: "event2",
-                            author: mongoose.Types.ObjectId(),
+                            author: user1,
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment(),
@@ -467,7 +468,7 @@ describe("API", () => {
                         expect(response.events).lengthOf(2)
 
                         expect(response.events[0]._id).to.be.eql(event1._id)
-                        expect(response.events[0]._id).to.be.eql(event2._id)
+                        expect(response.events[1]._id).to.be.eql(event2._id)
 
                         done()
                     })

@@ -11,7 +11,7 @@ router.post("/", (req, res) => {
         Event.create(req.body.event)
             .then((event) => {
                 logger.info("creating event ", event)
-                console.log(event._id)
+                console.log("success")
                 res.status(200).send({ status: 200, event })
             })
             .catch((error) => {
@@ -77,10 +77,13 @@ router.get("/all", (req, res) => {
 router.get("/one/:id", (req, res) => {
     if (req.params.id) {
         Event.getById(req.params.id)
-            .then((event) =>
-                res.status(200).send({ status: 200, event }))
-            .catch((error) =>
-                res.status(500).send({ status: 500, message: error.message }))
+            .then((event) => {
+                res.status(200).send({ status: 200, event })})
+            
+            .catch((error) => {
+                console.log(error)
+                res.status(500).send({ status: 500, message: error.message })
+            })
     } else {
         res.status(400).send({ status: 500, message: "no event id provided" })
     }
