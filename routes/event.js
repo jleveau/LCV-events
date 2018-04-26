@@ -3,7 +3,7 @@ const router = express.Router()
 const Event = require("../model/event/controller")
 const logger = require("../logger")
 
-router.post("/new", (req, res) => {
+router.post("/", (req, res) => {
     if (!req.body.event) {
         return res.status(500).send({ status: 400, message: "no event provided" })
     } else {
@@ -11,12 +11,47 @@ router.post("/new", (req, res) => {
         Event.create(req.body.event)
             .then((event) => {
                 logger.info("creating event ", event)
+                console.log("success")
                 res.status(200).send({ status: 200, event })
             })
             .catch((error) => {
                 logger.error(error)
                 res.status(500).send({ status: 500, message: error.message }
                 )
+            })
+    }
+})
+
+router.get("/author/:author_id", (req, res) => {
+    if (!req.params.id) {
+        const error = new Error("no author id provided")
+        logger.error(error)
+        res.status(404).send({ status: 404, message: error.message })
+    } else {
+        Event.getByAuthor(req.params.author_id)
+            .then((events) => {
+                res.status(200).send({ status: 200, events })
+            })
+            .catch((error) => {
+                logger.error(error)
+                res.status(500).send({ status: 500, message: error.message })
+            })
+    }
+})
+
+router.get("/participating/:user_id", (req, res) => {
+    if (!req.params.id) {
+        const error = new Error("no author id provided")
+        logger.error(error)
+        res.status(404).send({ status: 404, message: error.message })
+    } else {
+        Event.getByParticipating(req.params.user_id)
+            .then((events) => {
+                res.status(200).send({ status: 200, events })
+            })
+            .catch((error) => {
+                logger.error(error)
+                res.status(500).send({ status: 500, message: error.message })
             })
     }
 })
@@ -39,19 +74,22 @@ router.get("/all", (req, res) => {
             res.status(500).send({ status: 500, message: error.message }))
 })
 
-router.get("/:id", (req, res) => {
+router.get("/one/:id", (req, res) => {
     if (req.params.id) {
         Event.getById(req.params.id)
-            .then((event) =>
-                res.status(200).send({ status: 200, event }))
-            .catch((error) =>
-                res.status(500).send({ status: 500, message: error.message }))
+            .then((event) => {
+                res.status(200).send({ status: 200, event })})
+            
+            .catch((error) => {
+                console.log(error)
+                res.status(500).send({ status: 500, message: error.message })
+            })
     } else {
         res.status(400).send({ status: 500, message: "no event id provided" })
     }
 })
 
-router.put("/update", (req, res) => {
+router.put("/", (req, res) => {
     if (!req.body.event) {
         const error = new Error("can't find event")
         logger.error(error)
@@ -64,6 +102,23 @@ router.put("/update", (req, res) => {
             })
             .catch((error) => {
                 logger.error(error)
+                res.status(500).send({ status: 500, message: error.message })
+            })
+    }
+})
+
+router.delete("/:id", (req, res) => {
+    if (!req.params.id) {
+        const error = new Error("no event id provided")
+        logger.error(error)
+        res.status(404).send({ status: 404, message: error.message })
+    } else {
+        Event.delete(req.params.id)
+            .then((removedEvent) => {
+                res.status(200).send({ status: 200, removedEvent })
+                logger.info("deleting event ", req.params.id)
+            })
+            .catch((error) => {
                 res.status(500).send({ status: 500, message: error.message })
             })
     }

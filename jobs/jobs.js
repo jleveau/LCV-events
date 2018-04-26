@@ -21,9 +21,9 @@ function createWeeklyEvent () {
                 const date = nextSaturday()
                 const endDate = moment(date).add(2, "hours")
                 const limitEventDate = moment(date).subtract(3, "day")
-
                 if (!event || (moment(event.date) < date && moment(event.date).diff(date, "hour") > 1)) {
                     resolve(Event.create({
+                        title: "Badminton",
                         date: date.toString(),
                         end_date: endDate.toString(),
                         event_limit_date: limitEventDate.toString()

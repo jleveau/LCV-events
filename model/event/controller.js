@@ -7,22 +7,65 @@ class EventController {
         return new Promise((resolve, reject) => {
             const eventObj = new EventSchema(event)
             this.validate(eventObj)
-                .then(() => eventObj.save())
+                .then(() =>  eventObj.save())
                 .then((eventSaved) => resolve(eventSaved))
-                .catch((error) => reject(error))
+                .catch(error => reject(error))
         })
     }
 
     getAll () {
         return EventSchema.find({})
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
     }
 
     getById (id) {
         return new Promise((resolve, reject) => {
             if (!id) {
+                return reject(new Error("no event id given"))
+            }
+            return EventSchema.findById(id)
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
+            .then((event) => resolve(event))
+        })
+    }
+
+
+    getByAuthor (id) {
+        return new Promise((resolve, reject) => {
+            if (!id) {
                 return reject(new Error("no regestration id given"))
             }
-            return EventSchema.find({ _id: id })
+            return EventSchema.find({ author: id })
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec()
+            .then((events) => resolve(events))
+        })
+    }
+
+    getByParticipating (userId) {
+        return Promise((resolve, reject) => {
+            if (!userId) {
+                return reject(new Error("no user_id given"))
+            }
+            return EventSchema.find({
+                participants: userId
+            })
+            .populate("participants")
+            .populate("not_participants")
+            .populate("uncertains")
+            .populate("author")
+            .exec().then((events) => resolve(events))
         })
     }
 
@@ -33,6 +76,10 @@ class EventController {
                 .find({ date: { $gte: now } })
                 .sort({ "date": 1 })
                 .limit(1)
+                .populate("participants")
+                .populate("not_participants")
+                .populate("uncertains")
+                .populate("author")
                 .exec((err, events) => {
                     if (err) {
                         return reject(err)
@@ -60,6 +107,16 @@ class EventController {
                             return reject(error)
                         })
                 })
+        })
+    }
+
+    delete (eventId) {
+        return new Promise((resolve, reject) => {
+            return EventSchema.findByIdAndRemove(eventId)
+                .then((removedEvent) => {
+                    resolve(removedEvent)
+                })
+                .catch((error) => reject(error))
         })
     }
 

@@ -51,6 +51,23 @@ class TestHttpSender {
             })
         })
     }
+
+    static createDelete (url, body) {
+        return new Promise((resolve, reject) => {
+            request({
+                url: "http://localhost:3000" + url,
+                method: "DELETE",
+                json: body
+            }, (error, response, body) => {
+                if (response.statusCode === 200) {
+                    return resolve(JSON.parse(body))
+                } else {
+                    console.log(error, body)
+                    return reject(error || body.message)
+                }
+            })
+        })
+    }
 }
 
 module.exports = TestHttpSender
