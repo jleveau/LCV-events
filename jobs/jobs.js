@@ -38,7 +38,9 @@ function createWeeklyEvent () {
     })
 }
 
-const jobList = [createWeeklyEvent]
+const jobList = [
+    //    createWeeklyEvent
+]
 
 function exectureJobs () {
     jobList.forEach((job) => {

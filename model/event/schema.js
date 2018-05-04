@@ -7,6 +7,7 @@ mongoose.model("User", user)
 const schema = new mongoose.Schema({
     title: { type: String },
     description: { type: String },
+    place: { type: String },
     author: { type: ObjectId, ref: "User" },
 
     created_at: { type: Date, required: true, default: Date.now },

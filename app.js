@@ -6,6 +6,7 @@ const logger = require("./logger")
 const config = require("config")
 const jobs = require("./jobs/jobs")
 const event = require("./routes/event")
+const transaction = require("./routes/transaction")
 const morgan = require("morgan")
 
 // Database connection
@@ -48,6 +49,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use("/api/events", event)
+app.use("/api/transactions", transaction)
 
 jobs.start()
 
