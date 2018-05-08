@@ -10,7 +10,12 @@ class TestHttpSender {
                 if (response.statusCode === 200) {
                     return resolve(body)
                 } else {
-                    return reject(error || body.message || "An error has happened")
+                    try {
+                        const message = new Error(JSON.parse(response.body).message)
+                        reject(message)
+                    } catch (e) {
+                        return reject(error || body.message || new Error("An error has happened"))
+                    }
                 }
             })
         })
@@ -26,7 +31,12 @@ class TestHttpSender {
                 if (response.statusCode === 200) {
                     return resolve(body)
                 } else {
-                    return reject(error || body.message || "An error has happened")
+                    try {
+                        const message = new Error(JSON.parse(response.body).message)
+                        reject(message)
+                    } catch (e) {
+                        return reject(error || body.message || new Error("An error has happened"))
+                    }
                 }
             })
         })
@@ -46,7 +56,12 @@ class TestHttpSender {
                         resolve(body)
                     }
                 } else {
-                    reject(error)
+                    try {
+                        const message = new Error(JSON.parse(response.body).message)
+                        reject(message)
+                    } catch (e) {
+                        return reject(error || body.message || new Error("An error has happened"))
+                    }
                 }
             })
         })
@@ -62,8 +77,12 @@ class TestHttpSender {
                 if (response.statusCode === 200) {
                     return resolve(JSON.parse(body))
                 } else {
-                    console.log(error, body)
-                    return reject(error || body.message)
+                    try {
+                        const message = new Error(JSON.parse(response.body).message)
+                        reject(message)
+                    } catch (e) {
+                        return reject(error || body.message || new Error("An error has happened"))
+                    }
                 }
             })
         })

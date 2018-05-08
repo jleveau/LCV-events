@@ -14,9 +14,9 @@ router.post("/", (req, res) => {
                 logger.info("creating event ", event)
                 discordNotifier.sendNotificationCreateEvent(event._id)
                     .catch((error) => {
-                        console.log(error)
                         logger.error(error)
                     })
+
                 res.status(200).send({ status: 200, event })
             })
             .catch((error) => {
@@ -28,7 +28,7 @@ router.post("/", (req, res) => {
 })
 
 router.get("/author/:author_id", (req, res) => {
-    if (!req.params.id) {
+    if (!req.params.author_id) {
         const error = new Error("no author id provided")
         logger.error(error)
         res.status(404).send({ status: 404, message: error.message })
@@ -45,7 +45,7 @@ router.get("/author/:author_id", (req, res) => {
 })
 
 router.get("/participating/:user_id", (req, res) => {
-    if (!req.params.id) {
+    if (!req.params.user_id) {
         const error = new Error("no author id provided")
         logger.error(error)
         res.status(404).send({ status: 404, message: error.message })
@@ -83,14 +83,13 @@ router.get("/one/:id", (req, res) => {
     if (req.params.id) {
         Event.getById(req.params.id)
             .then((event) => {
-                res.status(200).send({ status: 200, event })})
-            
+                res.status(200).send({ status: 200, event })
+            })
             .catch((error) => {
-                console.log(error)
                 res.status(500).send({ status: 500, message: error.message })
             })
     } else {
-        res.status(400).send({ status: 500, message: "no event id provided" })
+        res.status(400).send({ status: 400, message: "no event id provided" })
     }
 })
 

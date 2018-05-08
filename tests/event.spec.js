@@ -375,7 +375,7 @@ describe("API", () => {
                             author: mongoose.Types.ObjectId(),
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
-                            date: moment()
+                            date: moment().toDate()
                         })
                         return event.save()
                     })
@@ -391,7 +391,7 @@ describe("API", () => {
                             author: mongoose.Types.ObjectId(),
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
-                            date: moment()
+                            date: moment().toDate()
                         })
 
                         return event.save
@@ -400,13 +400,13 @@ describe("API", () => {
             })
 
             it("get /api/events/one/?id", (done) => {
-                requestSender.createGet("/api/events/one/?id" + event1._id)
+                requestSender.createGet("/api/events/one/" + event1._id)
                     .then((response) => {
                         expect(response.status).be.eql(200)
-                        expect(response.events).lengthOf(1)
+                        expect(response.event._id.toString()).to.eql(event1._id.toString())
+                        expect(response.event.title).to.eql(event1.title)
+                        expect(moment(response.event.date).toDate()).to.eql(event1.date)
 
-                        const event = response.event
-                        expect(event._id).to.be.eql(event1._id)
                         done()
                     })
                     .catch((error) => done(error))
@@ -414,16 +414,18 @@ describe("API", () => {
         })
 
         describe("get all event for a Given User", (done) => {
-            const user1 = mongoose.Types.ObjectId()
-            const user2 = mongoose.Types.ObjectId()
+            let user1
+            let user2
             let event1, event2, event3
-
             before((done) => {
+                user1 = mongoose.Types.ObjectId()
+                user2 = mongoose.Types.ObjectId()
+
                 Event.remove({})
                     .then(() => {
                         const event = new Event({
                             title: "event1",
-                            author: user2,
+                            author: user1,
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment(),
@@ -435,7 +437,7 @@ describe("API", () => {
                         event1 = eventSaved
                         const event = new Event({
                             title: "event2",
-                            author: user1,
+                            author: user2,
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment(),
@@ -447,7 +449,7 @@ describe("API", () => {
                         event2 = eventSaved
                         const event = new Event({
                             title: "event3",
-                            author: user2,
+                            author: user1,
                             end_date: moment().add(1, "hour").toDate(),
                             event_limit_date: moment().subtract(1, "day").toDate(),
                             date: moment(),
@@ -467,8 +469,8 @@ describe("API", () => {
                         expect(response.status).be.eql(200)
                         expect(response.events).lengthOf(2)
 
-                        expect(response.events[0]._id).to.be.eql(event1._id)
-                        expect(response.events[1]._id).to.be.eql(event2._id)
+                        expect(response.events[0]._id).to.be.eql(event1._id.toString())
+                        expect(response.events[1]._id).to.be.eql(event2._id.toString())
 
                         done()
                     })
@@ -480,9 +482,8 @@ describe("API", () => {
                     .then((response) => {
                         expect(response.status).be.eql(200)
                         expect(response.events).lengthOf(2)
-
-                        expect(response.events[0]._id).to.be.eql(event1._id)
-                        expect(response.events[0]._id).to.be.eql(event3._id)
+                        expect(response.events[0]._id).to.be.eql(event1._id.toString())
+                        expect(response.events[1]._id).to.be.eql(event3._id.toString())
 
                         done()
                     })
