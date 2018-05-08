@@ -12,12 +12,13 @@ class DiscordNotifier {
                 return new Promise((resolve, reject) => {
 
                     event = event.toObject()
+                    console.log(moment(event.date).tz("Europe/Paris").format("LLLL"), moment(event.date).format("LLLL"))
                     let message = "Nouvel Evenement ! \n" +
                     event.title + "\n" +
                     "Crée par : " +event.author.username + "\n" +
-                    "Début : " + moment(event.date).format("LLLL").toString() + "\n"
+                    "Début : " + moment(event.date).tz("Europe/Paris").format("LLLL") + "\n"
                     if (event.end_date) {
-                         message += "Fin :" + moment(event.end_date).format("LLLL").toString()
+                         message += "Fin :" + moment(event.end_date).tz("Europe/Paris").format("LLLL")
                     }
                     message += "\n" + event.description
             
