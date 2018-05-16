@@ -1,11 +1,12 @@
 {
     "DBConfig": {
-        "host" : "localhost",
-        "port" : 27017,
-        "name" : "badmintonApp",
-        "prefix" : "mongodb://"
+        "host": "localhost",
+        "port": 27017,
+        "name": "badmintonApp",
+        "prefix": "mongodb://"
     },
     "ServerConfig": {
         "port": "3001"
-    }
+    },
+    "event-url": "https://organisation.le-cerf-vert.ovh/event/"
 }
