@@ -1,11 +1,15 @@
 {
     "DBConfig": {
-        "host" : "localhost",
-        "port" : 27017,
-        "name" : "badmintonAppTest",
-        "prefix" : "mongodb://"
+        "host": "localhost",
+        "port": 27017,
+        "name": "badmintonAppTest",
+        "prefix": "mongodb://"
     },
     "ServerConfig": {
         "port": "3000"
+    },
+    "event_url": "http://localhost:4200/event/",
+    "DiscordNotifierConfig": {
+        "url": "http://localhost:3003/discord/message"
     }
 }

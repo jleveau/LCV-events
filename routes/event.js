@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const Event = require("../model/event/controller")
 const logger = require("../logger")
+const discordNotifier = require("../tools/discord")
 
 router.post("/", (req, res) => {
     if (!req.body.event) {
@@ -11,6 +12,13 @@ router.post("/", (req, res) => {
         Event.create(req.body.event)
             .then((event) => {
                 logger.info("creating event ", event)
+                if (req.body.notify) {
+                    discordNotifier.sendNotificationCreateEvent(event._id)
+                        .catch((error) => {
+                            logger.error(error)
+                        })
+                }
+
                 res.status(200).send({ status: 200, event })
             })
             .catch((error) => {
@@ -95,6 +103,12 @@ router.put("/", (req, res) => {
     } else {
         Event.update(req.body.event)
             .then((event) => {
+                if (req.body.notify) {
+                    discordNotifier.sendNotificationUpdateEvent(event._id)
+                        .catch((error) => {
+                            logger.error(error)
+                        })
+                }
                 res.status(200).send({ status: 200, event })
                 logger.info("updating event ", event)
             })

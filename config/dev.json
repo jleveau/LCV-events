@@ -8,5 +8,8 @@
     "ServerConfig": {
         "port": "3001"
     },
-    "event-url": "https://organisation.le-cerf-vert.ovh/event/"
+    "event_url": "http://localhost:4200/event/",
+    "DiscordNotifierConfig": {
+        "url": "http://localhost:3003/discord/message"
+    }
 }

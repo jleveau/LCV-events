@@ -6,6 +6,7 @@ const schedule = require("node-schedule")
 
 function nextSaturday () {
     return moment().tz("Europe/Paris").set({
+
         weekday: 6,
         hour: 14,
         minutes: 0,
@@ -19,14 +20,13 @@ function createWeeklyEvent () {
             .then((event) => {
                 const date = nextSaturday()
                 const endDate = moment(date).add(2, "hours")
-                const limitReservationDate = moment(date).subtract(3, "day")
-
+                const limitEventDate = moment(date).subtract(3, "day")
                 if (!event || (moment(event.date) < date && moment(event.date).diff(date, "hour") > 1)) {
                     resolve(Event.create({
                         title: "Badminton",
                         date: date.toString(),
                         end_date: endDate.toString(),
-                        event_limit_date: limitReservationDate.toString()
+                        event_limit_date: limitEventDate.toString()
                     }))
                 }
                 resolve()
